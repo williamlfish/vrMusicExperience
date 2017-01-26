@@ -1,20 +1,8 @@
 import React, { Component } from 'react';
 import 'aframe';
-import space from '../imgs/space.jpg';
 import {Entity, Scene} from 'aframe-react';
 
 class App extends Component {
-  componentDidMount(){
-    this.move()
-  }
-  move(){
-    AFRAME.registerComponent('move', {
-      tick:(t, dt)=>{
-        this.object3D.position.y += .01;
-        console.log(this.object3D.position.y);
-      }
-    });
-  }
   render() {
     return (
       <Scene>

@@ -1,8 +1,18 @@
-.start{
-
+.all{
+  height: 100vh;
+  width: 100% ;
+  background: black;
 }
-.fade{
-  animation: fade 200ms ease forwards
+.all div{
+  float: left;
+  margin: 20px;
+  display: inline-block;
+  background: white;
+  width: 150px;
+  height: 150px;
+}
+.all h1{
+  font-size: 20px;
 }
 .a-enter-vr-button{
   top:100px;

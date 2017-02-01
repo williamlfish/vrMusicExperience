@@ -9,52 +9,71 @@ class App extends Component {
     super(props)
     this.state={
       show:false,
+      soundUrl:'',
       sounds:[]
     }
+    this.getMusic = this.getMusic.bind(this)
   }
-  componentDidMount(){
-
+  componentWillMount(){
+    if(this.state.show){
+      this.getMusic()
+    }
+  }
+  seaPlay(){
+    this.setState({
+      soundUrl:'seaOfVapors.mp3',
+      show:true
+    })
+    this.getMusic()
+  }
+  churchPlay(){
+    this.setState({
+      soundUrl:'Church.mp3',
+      show:true
+    })
+    this.getMusic()
   }
   getMusic(){
-    const axiosSoundGetter = axios.create({
-      responseType:'arraybuffer'
-    });
-    //we init the AudioContext
-    const audio = new (window.AudioContext || window.webkitAudioContext)();
-    console.log(audio.sampleRate);
-    //this analyser is used to get data
-    const analyser = audio.createAnalyser()
-    analyser.fftSize = 1024;
-    const buffer = analyser.frequencyBinCount;
-    let dataArray = new Uint8Array(buffer - 320);
-    let freqSize = (audio.sampleRate)/analyser.fftSize;
-    console.log(freqSize);
-    //make call to get sound
-    axiosSoundGetter.get('seaOfVapors.mp3').then(res=>{
-      audio.decodeAudioData(res.data, (buffer)=>{
-        const source = audio.createBufferSource();
-        source.buffer = buffer
-        source.connect(analyser);
-        analyser.connect(audio.destination)
-        if(source){
-          source.start()
-          setInterval(()=>{
-            analyser.getByteFrequencyData(dataArray);
-            let freqarry = [];
-            dataArray.forEach((d, i)=>{
-              freqarry.push(d)
-            })
-            this.setState({sounds:freqarry})
-          },40)
-
-        }
+    setTimeout(()=>{
+      const axiosSoundGetter = axios.create({
+        responseType:'arraybuffer'
+      });
+      //we init the AudioContext
+      const audio = new (window.AudioContext || window.webkitAudioContext)();
+      console.log(audio.sampleRate);
+      //this analyser is used to get data
+      const analyser = audio.createAnalyser()
+      analyser.fftSize = 1024;
+      const buffer = analyser.frequencyBinCount;
+      let dataArray = new Uint8Array(buffer - 320);
+      let freqSize = (audio.sampleRate)/analyser.fftSize;
+      console.log(freqSize);
+      //make call to get sound
+      axiosSoundGetter.get(this.state.soundUrl).then(res=>{
+        console.log(res);
+        audio.decodeAudioData(res.data, (buffer)=>{
+          const source = audio.createBufferSource();
+          source.buffer = buffer
+          source.connect(analyser);
+          analyser.connect(audio.destination)
+          if(source){
+            source.start()
+            setInterval(()=>{
+              analyser.getByteFrequencyData(dataArray);
+              let freqarry = [];
+              dataArray.forEach((d, i)=>{
+                freqarry.push(d)
+              })
+              this.setState({sounds:freqarry})
+            },40)
+          }
+        })
       })
-    })
-    this.setState({show:true})
+
+    }, 10)
+
 }
-
   render() {
-
     if(this.state.show){
       return(
       <Scene >
@@ -89,7 +108,17 @@ class App extends Component {
         </Entity>
         </Scene>)
     }else{
-      return <h1 className='start' onClick={this.getMusic.bind(this)} >Click here to start Song</h1>
+      return (
+        <div className='all'>
+          <div className='vapors' onClick={this.seaPlay.bind(this)} >
+            <h1 className='start' >Play seaOfVapors</h1>
+          </div>
+          <div className='church' onClick={this.churchPlay.bind(this)} >
+            <h1 className='start' >Play Church</h1>
+          </div>
+
+        </div>
+      )
     }
 
   }

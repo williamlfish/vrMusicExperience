@@ -1,6 +1,7 @@
 {
   "name": "vrSingingFountain",
   "version": "0.1.0",
+  "homepage":"https://williamlfish.github.io/vrMusicExperience/",
   "private": true,
   "devDependencies": {
     "autoprefixer": "6.5.1",
